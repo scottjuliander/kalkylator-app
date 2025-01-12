@@ -38,42 +38,20 @@
         nav a:hover {
             background-color: #45a049;
         }
-        label {
-            font-size: 14px;
-            color: #555;
-        }
-        input, select {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .chart-container {
-            margin: 20px auto;
-            width: 100%;
-            max-width: 600px;
-        }
     </style>
 </head>
 <body>
     <nav>
         <a href="javascript:void(0)" onclick="showPage('calculator')">Kalkylator</a>
-        <a href="javascript:void(0)" onclick="showPage('results')">Resultat</a>
+        <a href="javascript:void(0)" onclick="showPage('results')">Alla Resultat</a>
+        <a href="javascript:void(0)" onclick="showPage('Mat')">Mat</a>
+        <a href="javascript:void(0)" onclick="showPage('Snacks')">Snacks</a>
+        <a href="javascript:void(0)" onclick="showPage('Öl')">Öl</a>
+        <a href="javascript:void(0)" onclick="showPage('Vin')">Vin</a>
+        <a href="javascript:void(0)" onclick="showPage('Sprit')">Sprit</a>
+        <a href="javascript:void(0)" onclick="showPage('Drink')">Drink</a>
+        <a href="javascript:void(0)" onclick="showPage('RTD')">RTD</a>
+        <a href="javascript:void(0)" onclick="showPage('Vatten')">Vatten</a>
     </nav>
 
     <div id="calculator" class="container">
@@ -107,14 +85,50 @@
     </div>
 
     <div id="results" class="container" style="display: none;">
-        <h1>Resultat</h1>
+        <h1>Alla Resultat</h1>
         <div id="savedResults"></div>
-        <div class="chart-container">
-            <canvas id="chart"></canvas>
-        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <div id="Mat" class="container" style="display: none;">
+        <h1>Resultat: Mat</h1>
+        <div id="MatResults"></div>
+    </div>
+
+    <div id="Snacks" class="container" style="display: none;">
+        <h1>Resultat: Snacks</h1>
+        <div id="SnacksResults"></div>
+    </div>
+
+    <div id="Öl" class="container" style="display: none;">
+        <h1>Resultat: Öl</h1>
+        <div id="ÖlResults"></div>
+    </div>
+
+    <div id="Vin" class="container" style="display: none;">
+        <h1>Resultat: Vin</h1>
+        <div id="VinResults"></div>
+    </div>
+
+    <div id="Sprit" class="container" style="display: none;">
+        <h1>Resultat: Sprit</h1>
+        <div id="SpritResults"></div>
+    </div>
+
+    <div id="Drink" class="container" style="display: none;">
+        <h1>Resultat: Drink</h1>
+        <div id="DrinkResults"></div>
+    </div>
+
+    <div id="RTD" class="container" style="display: none;">
+        <h1>Resultat: RTD</h1>
+        <div id="RTDResults"></div>
+    </div>
+
+    <div id="Vatten" class="container" style="display: none;">
+        <h1>Resultat: Vatten</h1>
+        <div id="VattenResults"></div>
+    </div>
+
     <script>
         let savedCalculations = JSON.parse(localStorage.getItem('calculations')) || [];
 
@@ -124,6 +138,8 @@
 
             if (pageId === 'results') {
                 displayResults();
+            } else if (['Mat', 'Snacks', 'Öl', 'Vin', 'Sprit', 'Drink', 'RTD', 'Vatten'].includes(pageId)) {
+                displayCategoryResults(pageId);
             }
         }
 
@@ -176,43 +192,30 @@
             savedResultsDiv.innerHTML = '';
 
             const ul = document.createElement('ul');
-            savedCalculations.sort((a, b) => b.resultPercentage - a.resultPercentage).forEach(calc => {
+            savedCalculations.forEach(calc => {
                 const li = document.createElement('li');
                 li.textContent = `${calc.title} (${calc.category}): ${calc.resultPrice}, Råvaruprocent: ${calc.resultPercentage.toFixed(2)}%`;
                 ul.appendChild(li);
             });
             savedResultsDiv.appendChild(ul);
-
-            updateChart();
         }
 
-        function updateChart() {
-            const ctx = document.getElementById('chart').getContext('2d');
-            const labels = savedCalculations.map(calc => calc.title);
-            const data = savedCalculations.map(calc => calc.resultPercentage);
+        function displayCategoryResults(category) {
+            const categoryResultsDiv = document.getElementById(`${category}Results`);
+            categoryResultsDiv.innerHTML = '';
 
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels,
-                    datasets: [{
-                        label: 'Råvaruprocent',
-                        data,
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
+            const ul = document.createElement('ul');
+            savedCalculations
+                .filter(calc => calc.category === category)
+                .forEach(calc => {
+                    const li = document.createElement('li');
+                    li.textContent = `${calc.title}: ${calc.resultPrice}, Råvaruprocent: ${calc.resultPercentage.toFixed(2)}%`;
+                    ul.appendChild(li);
+                });
+            categoryResultsDiv.appendChild(ul);
         }
     </script>
 </body>
 </html>
+
 
