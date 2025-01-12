@@ -38,6 +38,20 @@
         nav a:hover {
             background-color: #45a049;
         }
+        button {
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -79,6 +93,7 @@
 
         <button onclick="calculateValues()">Beräkna</button>
         <button onclick="saveCalculation()">Spara uträkning</button>
+        <button onclick="exportToExcel()">Exportera till Excel</button>
 
         <div class="result" id="resultPrice"></div>
         <div class="result" id="resultPercentage"></div>
@@ -201,21 +216,7 @@
         }
 
         function displayCategoryResults(category) {
-            const categoryResultsDiv = document.getElementById(`${category}Results`);
-            categoryResultsDiv.innerHTML = '';
+            const category
 
-            const ul = document.createElement('ul');
-            savedCalculations
-                .filter(calc => calc.category === category)
-                .forEach(calc => {
-                    const li = document.createElement('li');
-                    li.textContent = `${calc.title}: ${calc.resultPrice}, Råvaruprocent: ${calc.resultPercentage.toFixed(2)}%`;
-                    ul.appendChild(li);
-                });
-            categoryResultsDiv.appendChild(ul);
-        }
-    </script>
-</body>
-</html>
 
 
