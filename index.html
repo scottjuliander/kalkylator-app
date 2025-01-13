@@ -216,7 +216,42 @@
         }
 
         function displayCategoryResults(category) {
-            const category
+            const categoryResultsDiv = document.getElementById(`${category}Results`);
+            categoryResultsDiv.innerHTML = '';
+
+            const ul = document.createElement('ul');
+            savedCalculations
+                .filter(calc => calc.category === category)
+                .forEach(calc => {
+                    const li = document.createElement('li');
+                    li.textContent = `${calc.title}: ${calc.resultPrice}, Råvaruprocent: ${calc.resultPercentage.toFixed(2)}%`;
+                    ul.appendChild(li);
+                });
+            categoryResultsDiv.appendChild(ul);
+        }
+
+        function exportToExcel() {
+            const headers = ["Titel", "Kategori", "Rekommenderat Utpris", "Råvaruprocent"];
+            const rows = savedCalculations.map(calc => [calc.title, calc.category, calc.resultPrice, calc.resultPercentage.toFixed(2)]);
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += headers.join(",") + "\n";
+            rows.forEach(row => {
+                csvContent += row.join(",") + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "calculations.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
+
 
 
 
