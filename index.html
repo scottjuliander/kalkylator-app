@@ -1,3 +1,7 @@
+# Save the corrected HTML content to a file for download
+file_path = "/mnt/data/Kalkylator_Uppdaterad.html"
+
+html_content = """
 <!DOCTYPE html>
 <html lang="sv">
 <head>
@@ -253,6 +257,13 @@
     </script>
 </body>
 </html>
+"""
+
+with open(file_path, "w", encoding="utf-8") as file:
+    file.write(html_content)
+
+file_path
+
 
 
 
