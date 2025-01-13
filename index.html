@@ -120,6 +120,7 @@
         <a href="javascript:void(0)" onclick="showPage('calculator')">Kalkylator</a>
         <a href="javascript:void(0)" onclick="showPage('results')">Alla Resultat</a>
         <a href="javascript:void(0)" onclick="showPage('categories')">Kategorier</a>
+        <a href="javascript:void(0)" onclick="showPage('review')">Se över</a>
     </nav>
 
     <div id="calculator" class="container">
@@ -169,6 +170,12 @@
         <div class="category-section" id="Fatöl"></div>
     </div>
 
+    <div id="review" class="container" style="display: none;">
+        <h1>Se över</h1>
+        <p>Produkter med en råvaruprocent över 25%:</p>
+        <div id="reviewResults"></div>
+    </div>
+
     <script>
         let savedCalculations = JSON.parse(localStorage.getItem('calculations')) || [];
 
@@ -180,6 +187,8 @@
                 displayResults();
             } else if (pageId === 'categories') {
                 displayCategoryResults();
+            } else if (pageId === 'review') {
+                displayReviewResults();
             }
         }
 
@@ -196,9 +205,9 @@
             const sellingPriceExVat = purchasePrice * markup;
             const vatRate = ['Mat', 'Snacks', 'Vatten', 'Fatöl'].includes(category) ? 0.12 : 0.25;
             const sellingPriceInclVat = sellingPriceExVat * (1 + vatRate);
-            const costPercentage = (purchasePrice / sellingPriceInclVat) * 100;
+            const costPercentage = (purchasePrice / sellingPriceExVat) * 100;
 
-            alert(`Rekommenderat utpris inkl. moms: ${sellingPriceInclVat.toFixed(2)} kr\nRåvaruprocent: ${costPercentage.toFixed(2)}%`);
+            alert(`Rekommenderat utpris inkl. moms: ${sellingPriceInclVat.toFixed(2)} kr\nRåvaruprocent (exkl. moms): ${costPercentage.toFixed(2)}%`);
         }
 
         function saveCalculation() {
@@ -215,7 +224,7 @@
             const vatRate = ['Mat', 'Snacks', 'Vatten', 'Fatöl'].includes(category) ? 0.12 : 0.25;
             const sellingPriceExVat = purchasePrice * markup;
             const sellingPriceInclVat = sellingPriceExVat * (1 + vatRate);
-            const costPercentage = (purchasePrice / sellingPriceInclVat) * 100;
+            const costPercentage = (purchasePrice / sellingPriceExVat) * 100;
 
             savedCalculations.push({ title, category, sellingPriceInclVat, costPercentage, vatRate });
             localStorage.setItem('calculations', JSON.stringify(savedCalculations));
@@ -224,76 +233,8 @@
         }
 
         function deleteCalculation(index) {
-            if (confirm('Är du säker på att du vill ta bort denna uträkning?')) {
-                savedCalculations.splice(index, 1);
-                localStorage.setItem('calculations', JSON.stringify(savedCalculations));
-                displayResults();
-                displayCategoryResults();
-            }
-        }
+            if (confirm('Är du säker på att
 
-        function editCalculation(index) {
-            const calc = savedCalculations[index];
-            document.getElementById('title').value = calc.title;
-            document.getElementById('category').value = calc.category;
-            document.getElementById('purchasePrice').value = (calc.sellingPriceInclVat / (1 + calc.vatRate) / (calc.sellingPriceInclVat / calc.costPercentage * 100)).toFixed(2);
-            document.getElementById('markup').value = (calc.sellingPriceInclVat / (calc.sellingPriceInclVat / (1 + calc.vatRate))).toFixed(2);
-
-            deleteCalculation(index);
-            showPage('calculator');
-        }
-
-        function displayResults() {
-            const savedResultsDiv = document.getElementById('savedResults');
-            savedResultsDiv.innerHTML = '<ul>' +
-                savedCalculations.map((calc, index) => `<li>${calc.title} (${calc.category}): ${calc.sellingPriceInclVat.toFixed(2)} kr, Råvaruprocent: ${calc.costPercentage.toFixed(2)}%, Moms: ${(calc.vatRate * 100).toFixed(0)}%
-                <div class="action-buttons">
-                    <button onclick="editCalculation(${index})">Ändra</button>
-                    <button onclick="deleteCalculation(${index})">Ta bort</button>
-                </div>
-                </li>`).join('') +
-                '</ul>';
-        }
-
-        function displayCategoryResults() {
-            document.querySelectorAll('.category-section').forEach(section => {
-                section.innerHTML = '';
-                const category = section.id;
-                const categoryResults = savedCalculations.filter(calc => calc.category === category);
-                if (categoryResults.length) {
-                    section.innerHTML = `<h2>${category}</h2><ul>` +
-                        categoryResults.map((calc, index) => `<li>${calc.title}: ${calc.sellingPriceInclVat.toFixed(2)} kr, Råvaruprocent: ${calc.costPercentage.toFixed(2)}%, Moms: ${(calc.vatRate * 100).toFixed(0)}%
-                        <div class="action-buttons">
-                            <button onclick="editCalculation(${index})">Ändra</button>
-                            <button onclick="deleteCalculation(${index})">Ta bort</button>
-                        </div>
-                        </li>`).join('') +
-                        '</ul>';
-                }
-            });
-        }
-
-        function exportToExcel() {
-            const headers = ["Titel", "Kategori", "Rekommenderat Utpris", "Råvaruprocent", "Moms"];
-            const rows = savedCalculations.map(calc => [calc.title, calc.category, calc.sellingPriceInclVat.toFixed(2), calc.costPercentage.toFixed(2), (calc.vatRate * 100).toFixed(0) + '%']);
-
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += headers.join(",") + "\n";
-            rows.forEach(row => {
-                csvContent += row.join(",") + "\n";
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "kalkylator_resultat.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-    </script>
-</body>
-</html>
 
 
 
