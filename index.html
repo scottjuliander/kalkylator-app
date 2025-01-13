@@ -232,8 +232,74 @@
             alert('Uträkningen sparades!');
         }
 
+        function displayResults() {
+            const savedResultsDiv = document.getElementById('savedResults');
+            savedResultsDiv.innerHTML = '<ul>' +
+                savedCalculations.map((calc, index) => `<li>${calc.title} (${calc.category}): ${calc.sellingPriceInclVat.toFixed(2)} kr, Råvaruprocent (exkl. moms): ${calc.costPercentage.toFixed(2)}%
+                <div class="action-buttons">
+                    <button onclick="deleteCalculation(${index})">Ta bort</button>
+                </div>
+                </li>`).join('') +
+                '</ul>';
+        }
+
+        function displayCategoryResults() {
+            document.querySelectorAll('.category-section').forEach(section => {
+                section.innerHTML = '';
+                const category = section.id;
+                const categoryResults = savedCalculations.filter(calc => calc.category === category);
+                if (categoryResults.length) {
+                    section.innerHTML = `<h2>${category}</h2><ul>` +
+                        categoryResults.map(calc => `<li>${calc.title}: ${calc.sellingPriceInclVat.toFixed(2)} kr, Råvaruprocent (exkl. moms): ${calc.costPercentage.toFixed(2)}%</li>`).join('') +
+                        '</ul>';
+                }
+            });
+        }
+
+        function displayReviewResults() {
+            const reviewResultsDiv = document.getElementById('reviewResults');
+            const reviewResults = savedCalculations.filter(calc => calc.costPercentage > 25);
+            if (reviewResults.length) {
+                reviewResultsDiv.innerHTML = '<ul>' +
+                    reviewResults.map(calc => `<li>${calc.title} (${calc.category}): ${calc.sellingPriceInclVat.toFixed(2)} kr, Råvaruprocent (exkl. moms): ${calc.costPercentage.toFixed(2)}%</li>`).join('') +
+                    '</ul>';
+            } else {
+                reviewResultsDiv.innerHTML = '<p>Inga produkter med en råvaruprocent över 25% hittades.</p>';
+            }
+        }
+
         function deleteCalculation(index) {
-            if (confirm('Är du säker på att
+            if (confirm('Är du säker på att du vill ta bort denna uträkning?')) {
+                savedCalculations.splice(index, 1);
+                localStorage.setItem('calculations', JSON.stringify(savedCalculations));
+                displayResults();
+                displayCategoryResults();
+                displayReviewResults();
+            }
+        }
+
+        function exportToExcel() {
+            const headers = ["Titel", "Kategori", "Rekommenderat Utpris", "Råvaruprocent (exkl. moms)", "Moms"];
+            const rows = savedCalculations.map(calc => [calc.title, calc.category, calc.sellingPriceInclVat.toFixed(2), calc.costPercentage.toFixed(2), (calc.vatRate * 100).toFixed(0) + '%']);
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += headers.join(",") + "\n";
+            rows.forEach(row => {
+                csvContent += row.join(",") + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "kalkylator_resultat.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
+
 
 
 
