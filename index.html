@@ -6,66 +6,109 @@
     <title>Kalkylator för Utpris och Råvaruprocent</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
+            background-color: #eef2f3;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #4CAF50;
+            padding: 10px 0;
+        }
+        nav a {
+            margin: 0 15px;
+            padding: 10px 20px;
+            background-color: white;
+            color: #4CAF50;
+            text-decoration: none;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        nav a:hover {
+            background-color: #45a049;
+            color: white;
         }
         .container {
-            max-width: 800px;
-            margin: 20px auto;
-            background-color: #ffffff;
-            padding: 20px;
+            max-width: 900px;
+            margin: 30px auto;
+            background-color: white;
             border-radius: 8px;
+            padding: 20px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
         h1, h2 {
             text-align: center;
             color: #333;
         }
-        nav {
-            text-align: center;
-            margin-bottom: 20px;
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #555;
         }
-        nav a {
-            margin: 0 10px;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            text-decoration: none;
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
             border-radius: 4px;
-        }
-        nav a:hover {
-            background-color: #45a049;
+            box-sizing: border-box;
         }
         button {
-            margin-top: 20px;
             background-color: #4CAF50;
             color: white;
-            padding: 10px 20px;
+            padding: 12px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            display: block;
-            width: 100%;
+            font-size: 16px;
+            margin-top: 20px;
         }
         button:hover {
             background-color: #45a049;
         }
+        .result {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .category-section {
+            margin-top: 30px;
+        }
+        .category-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        .category-section li {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f4f4f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
+    <header>
+        Kalkylator för Utpris och Råvaruprocent
+    </header>
     <nav>
         <a href="javascript:void(0)" onclick="showPage('calculator')">Kalkylator</a>
         <a href="javascript:void(0)" onclick="showPage('results')">Alla Resultat</a>
-        <a href="javascript:void(0)" onclick="showPage('Mat')">Mat</a>
-        <a href="javascript:void(0)" onclick="showPage('Snacks')">Snacks</a>
-        <a href="javascript:void(0)" onclick="showPage('Öl')">Öl</a>
-        <a href="javascript:void(0)" onclick="showPage('Vin')">Vin</a>
-        <a href="javascript:void(0)" onclick="showPage('Sprit')">Sprit</a>
-        <a href="javascript:void(0)" onclick="showPage('Drink')">Drink</a>
-        <a href="javascript:void(0)" onclick="showPage('RTD')">RTD</a>
-        <a href="javascript:void(0)" onclick="showPage('Vatten')">Vatten</a>
+        <a href="javascript:void(0)" onclick="showPage('categories')">Kategorier</a>
     </nav>
 
     <div id="calculator" class="container">
@@ -93,10 +136,6 @@
 
         <button onclick="calculateValues()">Beräkna</button>
         <button onclick="saveCalculation()">Spara uträkning</button>
-        <button onclick="exportToExcel()">Exportera till Excel</button>
-
-        <div class="result" id="resultPrice"></div>
-        <div class="result" id="resultPercentage"></div>
     </div>
 
     <div id="results" class="container" style="display: none;">
@@ -104,44 +143,16 @@
         <div id="savedResults"></div>
     </div>
 
-    <div id="Mat" class="container" style="display: none;">
-        <h1>Resultat: Mat</h1>
-        <div id="MatResults"></div>
-    </div>
-
-    <div id="Snacks" class="container" style="display: none;">
-        <h1>Resultat: Snacks</h1>
-        <div id="SnacksResults"></div>
-    </div>
-
-    <div id="Öl" class="container" style="display: none;">
-        <h1>Resultat: Öl</h1>
-        <div id="ÖlResults"></div>
-    </div>
-
-    <div id="Vin" class="container" style="display: none;">
-        <h1>Resultat: Vin</h1>
-        <div id="VinResults"></div>
-    </div>
-
-    <div id="Sprit" class="container" style="display: none;">
-        <h1>Resultat: Sprit</h1>
-        <div id="SpritResults"></div>
-    </div>
-
-    <div id="Drink" class="container" style="display: none;">
-        <h1>Resultat: Drink</h1>
-        <div id="DrinkResults"></div>
-    </div>
-
-    <div id="RTD" class="container" style="display: none;">
-        <h1>Resultat: RTD</h1>
-        <div id="RTDResults"></div>
-    </div>
-
-    <div id="Vatten" class="container" style="display: none;">
-        <h1>Resultat: Vatten</h1>
-        <div id="VattenResults"></div>
+    <div id="categories" class="container" style="display: none;">
+        <h1>Kategorier</h1>
+        <div class="category-section" id="Mat"></div>
+        <div class="category-section" id="Snacks"></div>
+        <div class="category-section" id="Öl"></div>
+        <div class="category-section" id="Vin"></div>
+        <div class="category-section" id="Sprit"></div>
+        <div class="category-section" id="Drink"></div>
+        <div class="category-section" id="RTD"></div>
+        <div class="category-section" id="Vatten"></div>
     </div>
 
     <script>
@@ -153,8 +164,8 @@
 
             if (pageId === 'results') {
                 displayResults();
-            } else if (['Mat', 'Snacks', 'Öl', 'Vin', 'Sprit', 'Drink', 'RTD', 'Vatten'].includes(pageId)) {
-                displayCategoryResults(pageId);
+            } else if (pageId === 'categories') {
+                displayCategoryResults();
             }
         }
 
@@ -163,94 +174,64 @@
             const markup = parseFloat(document.getElementById('markup').value);
             const category = document.getElementById('category').value;
 
-            let vatRate = 0.25;
-            if (category === "Mat" || category === "Snacks" || category === "Vatten") {
-                vatRate = 0.12;
-            }
-
-            if (isNaN(purchasePrice) || purchasePrice <= 0 || isNaN(markup) || markup <= 0) {
-                alert('Vänligen ange giltiga värden.');
+            if (isNaN(purchasePrice) || isNaN(markup) || purchasePrice <= 0 || markup <= 0) {
+                alert('Vänligen ange giltiga värden för inköpspris och påslag.');
                 return;
             }
 
             const sellingPriceExVat = purchasePrice * markup;
+            const vatRate = ['Mat', 'Snacks', 'Vatten'].includes(category) ? 0.12 : 0.25;
             const sellingPriceInclVat = sellingPriceExVat * (1 + vatRate);
             const costPercentage = (purchasePrice / sellingPriceInclVat) * 100;
 
-            document.getElementById('resultPrice').textContent = `Rekommenderat utpris inkl. moms: ${sellingPriceInclVat.toFixed(2)} kr`;
-            document.getElementById('resultPercentage').textContent = `Råvaruprocent: ${costPercentage.toFixed(2)}%`;
+            alert(`Rekommenderat utpris inkl. moms: ${sellingPriceInclVat.toFixed(2)} kr\nRåvaruprocent: ${costPercentage.toFixed(2)}%`);
         }
 
         function saveCalculation() {
             const title = document.getElementById('title').value.trim();
             const category = document.getElementById('category').value;
-            const resultPrice = document.getElementById('resultPrice').textContent;
-            const resultPercentage = parseFloat(document.getElementById('resultPercentage').textContent.split(': ')[1]);
+            const purchasePrice = parseFloat(document.getElementById('purchasePrice').value);
+            const markup = parseFloat(document.getElementById('markup').value);
 
-            if (!title || !resultPrice || isNaN(resultPercentage)) {
-                alert('Se till att alla fält är ifyllda och att beräkningen är gjord.');
+            if (!title || isNaN(purchasePrice) || isNaN(markup)) {
+                alert('Fyll i alla fält innan du sparar.');
                 return;
             }
 
-            const calculation = { title, category, resultPrice, resultPercentage };
-            savedCalculations.push(calculation);
+            const vatRate = ['Mat', 'Snacks', 'Vatten'].includes(category) ? 0.12 : 0.25;
+            const sellingPriceExVat = purchasePrice * markup;
+            const sellingPriceInclVat = sellingPriceExVat * (1 + vatRate);
+            const costPercentage = (purchasePrice / sellingPriceInclVat) * 100;
 
-            // Spara till localStorage
+            savedCalculations.push({ title, category, sellingPriceInclVat, costPercentage });
             localStorage.setItem('calculations', JSON.stringify(savedCalculations));
 
-            alert('Uträkning sparad!');
-            document.getElementById('title').value = '';
+            alert('Uträkningen sparades!');
         }
 
         function displayResults() {
             const savedResultsDiv = document.getElementById('savedResults');
-            savedResultsDiv.innerHTML = '';
-
-            const ul = document.createElement('ul');
-            savedCalculations.forEach(calc => {
-                const li = document.createElement('li');
-                li.textContent = `${calc.title} (${calc.category}): ${calc.resultPrice}, Råvaruprocent: ${calc.resultPercentage.toFixed(2)}%`;
-                ul.appendChild(li);
-            });
-            savedResultsDiv.appendChild(ul);
+            savedResultsDiv.innerHTML = '<ul>' +
+                savedCalculations.map(calc => `<li>${calc.title} (${calc.category}): ${calc.sellingPriceInclVat.toFixed(2)} kr, Råvaruprocent: ${calc.costPercentage.toFixed(2)}%</li>`).join('') +
+                '</ul>';
         }
 
-        function displayCategoryResults(category) {
-            const categoryResultsDiv = document.getElementById(`${category}Results`);
-            categoryResultsDiv.innerHTML = '';
-
-            const ul = document.createElement('ul');
-            savedCalculations
-                .filter(calc => calc.category === category)
-                .forEach(calc => {
-                    const li = document.createElement('li');
-                    li.textContent = `${calc.title}: ${calc.resultPrice}, Råvaruprocent: ${calc.resultPercentage.toFixed(2)}%`;
-                    ul.appendChild(li);
-                });
-            categoryResultsDiv.appendChild(ul);
-        }
-
-        function exportToExcel() {
-            const headers = ["Titel", "Kategori", "Rekommenderat Utpris", "Råvaruprocent"];
-            const rows = savedCalculations.map(calc => [calc.title, calc.category, calc.resultPrice, calc.resultPercentage.toFixed(2)]);
-
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += headers.join(",") + "\n";
-            rows.forEach(row => {
-                csvContent += row.join(",") + "\n";
+        function displayCategoryResults() {
+            document.querySelectorAll('.category-section').forEach(section => {
+                section.innerHTML = '';
+                const category = section.id;
+                const categoryResults = savedCalculations.filter(calc => calc.category === category);
+                if (categoryResults.length) {
+                    section.innerHTML = `<h2>${category}</h2><ul>` +
+                        categoryResults.map(calc => `<li>${calc.title}: ${calc.sellingPriceInclVat.toFixed(2)} kr, Råvaruprocent: ${calc.costPercentage.toFixed(2)}%</li>`).join('') +
+                        '</ul>';
+                }
             });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "calculations.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
         }
     </script>
 </body>
-</html>
+</html
+
 
 
 
