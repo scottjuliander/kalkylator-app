@@ -132,10 +132,12 @@
             <option value="Drink">Drink</option>
             <option value="RTD">RTD</option>
             <option value="Vatten">Vatten</option>
+            <option value="Fatöl">Fatöl</option>
         </select>
 
         <button onclick="calculateValues()">Beräkna</button>
         <button onclick="saveCalculation()">Spara uträkning</button>
+        <button onclick="exportToExcel()">Exportera till Excel</button>
     </div>
 
     <div id="results" class="container" style="display: none;">
@@ -153,6 +155,7 @@
         <div class="category-section" id="Drink"></div>
         <div class="category-section" id="RTD"></div>
         <div class="category-section" id="Vatten"></div>
+        <div class="category-section" id="Fatöl"></div>
     </div>
 
     <script>
@@ -180,7 +183,7 @@
             }
 
             const sellingPriceExVat = purchasePrice * markup;
-            const vatRate = ['Mat', 'Snacks', 'Vatten'].includes(category) ? 0.12 : 0.25;
+            const vatRate = ['Mat', 'Snacks', 'Vatten', 'Fatöl'].includes(category) ? 0.12 : 0.25;
             const sellingPriceInclVat = sellingPriceExVat * (1 + vatRate);
             const costPercentage = (purchasePrice / sellingPriceInclVat) * 100;
 
@@ -198,7 +201,7 @@
                 return;
             }
 
-            const vatRate = ['Mat', 'Snacks', 'Vatten'].includes(category) ? 0.12 : 0.25;
+            const vatRate = ['Mat', 'Snacks', 'Vatten', 'Fatöl'].includes(category) ? 0.12 : 0.25;
             const sellingPriceExVat = purchasePrice * markup;
             const sellingPriceInclVat = sellingPriceExVat * (1 + vatRate);
             const costPercentage = (purchasePrice / sellingPriceInclVat) * 100;
@@ -228,9 +231,29 @@
                 }
             });
         }
+
+        function exportToExcel() {
+            const headers = ["Titel", "Kategori", "Rekommenderat Utpris", "Råvaruprocent"];
+            const rows = savedCalculations.map(calc => [calc.title, calc.category, calc.sellingPriceInclVat.toFixed(2), calc.costPercentage.toFixed(2)]);
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += headers.join(",") + "\n";
+            rows.forEach(row => {
+                csvContent += row.join(",") + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "kalkylator_resultat.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
     </script>
 </body>
-</html
+</html>
+
 
 
 
